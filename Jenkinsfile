@@ -1,7 +1,13 @@
 pipeline {
     agent any
 
+    tools {
+        jdk 'jdk21'
+        maven 'Maven 3.9'
+    }
+
     stages {
+
         stage('Build') {
             steps {
                 bat 'mvn clean package'
@@ -11,6 +17,14 @@ pipeline {
         stage('Test') {
             steps {
                 bat 'mvn test'
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarQube') {
+                    bat 'mvn sonar:sonar'
+                }
             }
         }
 
