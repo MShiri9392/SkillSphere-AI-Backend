@@ -28,6 +28,27 @@ pipeline {
             }
         }
 
+        // 👇 ADD THESE TWO STAGES HERE
+
+        stage('OWASP Dependency Check') {
+            steps {
+                dependencyCheck(
+                    odcInstallation: 'DependencyCheck',
+                    additionalArguments: '--scan . --format XML'
+                )
+            }
+        }
+
+        stage('Publish Dependency Report') {
+            steps {
+                dependencyCheckPublisher(
+                    pattern: '**/dependency-check-report.xml'
+                )
+            }
+        }
+
+        // 👇 THEN YOUR EXISTING STAGES CONTINUE
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t skillsphere-backend .'
