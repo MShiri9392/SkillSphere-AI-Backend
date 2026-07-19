@@ -30,13 +30,14 @@ public class SecurityConfig {
                         // =========================
                         // Public APIs
                         // =========================
-                        .requestMatchers(
-                                "/",
-                                "/api/auth/**",
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                                .requestMatchers(
+                                        "/",
+                                        "/api/users/login",
+                                        "/api/users/register",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**",
+                                        "/swagger-ui.html"
+                                ).permitAll()
 
                         // =========================
                         // Course APIs
@@ -195,8 +196,7 @@ public class SecurityConfig {
                         UsernamePasswordAuthenticationFilter.class
                 )
 
-                .httpBasic(Customizer.withDefaults());
-
+                .httpBasic(httpBasic -> httpBasic.disable());
         return http.build();
     }
 }
