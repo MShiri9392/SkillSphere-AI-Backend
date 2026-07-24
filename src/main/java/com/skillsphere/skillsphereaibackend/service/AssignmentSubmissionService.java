@@ -25,6 +25,7 @@ public class AssignmentSubmissionService {
     @Autowired
     private UserRepository userRepository;
 
+    // Student submits assignment
     public AssignmentSubmission submitAssignment(Long assignmentId,
                                                  Long userId,
                                                  AssignmentSubmission submission) {
@@ -44,16 +45,30 @@ public class AssignmentSubmissionService {
         return submissionRepository.save(submission);
     }
 
+    // View all submissions
     public List<AssignmentSubmission> getAllSubmissions() {
+
         return submissionRepository.findAll();
+
     }
 
+    // View one submission
     public AssignmentSubmission getSubmission(Long id) {
+
         return submissionRepository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Submission not found"));
+
     }
 
+    // Student's submissions
+    public List<AssignmentSubmission> getStudentSubmissions(Long userId) {
+
+        return submissionRepository.findByUser_Id(userId);
+
+    }
+
+    // Grade submission
     public AssignmentSubmission gradeSubmission(Long id,
                                                 Integer grade,
                                                 String feedback) {
@@ -66,6 +81,7 @@ public class AssignmentSubmissionService {
         return submissionRepository.save(submission);
     }
 
+    // Delete submission
     public void deleteSubmission(Long id) {
 
         AssignmentSubmission submission = getSubmission(id);

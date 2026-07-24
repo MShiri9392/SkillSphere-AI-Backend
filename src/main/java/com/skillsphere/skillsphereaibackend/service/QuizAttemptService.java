@@ -1,5 +1,6 @@
 package com.skillsphere.skillsphereaibackend.service;
 
+import com.skillsphere.skillsphereaibackend.dto.QuizAttemptRequest;
 import com.skillsphere.skillsphereaibackend.entity.Quiz;
 import com.skillsphere.skillsphereaibackend.entity.QuizAttempt;
 import com.skillsphere.skillsphereaibackend.entity.User;
@@ -20,48 +21,42 @@ public class QuizAttemptService {
     private QuizAttemptRepository quizAttemptRepository;
 
     @Autowired
-    private QuizRepository quizRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
-    // Student attempts a quiz
-    public QuizAttempt attemptQuiz(Long quizId, Long userId, QuizAttempt attempt) {
+    @Autowired
+    private QuizRepository quizRepository;
 
-        Quiz quiz = quizRepository.findById(quizId)
-                .orElseThrow(() -> new ResourceNotFoundException("Quiz not found"));
+    public QuizAttempt submitQuiz(QuizAttemptRequest request) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        User user = userRepository.findById(request.getUserId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("User not found"));
 
-        attempt.setQuiz(quiz);
+        Quiz quiz = quizRepository.findById(request.getQuizId())
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Quiz not found"));
+
+        QuizAttempt attempt = new QuizAttempt();
+
         attempt.setUser(user);
-        attempt.setAttemptedAt(LocalDateTime.now());
-
-        // Auto-calculate score
-        if (quiz.getCorrectAnswer().equalsIgnoreCase(attempt.getSelectedAnswer())) {
-            attempt.setScore(100);
-        } else {
-            attempt.setScore(0);
-        }
+        attempt.setQuiz(quiz);
+        attempt.setScore(request.getScore());
+        attempt.setAttemptDate(LocalDateTime.now());
 
         return quizAttemptRepository.save(attempt);
     }
 
-    // Get all quiz attempts
     public List<QuizAttempt> getAllAttempts() {
         return quizAttemptRepository.findAll();
     }
 
-    // Get attempt by ID
-    public QuizAttempt getAttemptById(Long id) {
+    public QuizAttempt getAttempt(Long id) {
         return quizAttemptRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Quiz attempt not found"));
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Quiz Attempt not found"));
     }
 
-    // Delete attempt
     public void deleteAttempt(Long id) {
-        QuizAttempt attempt = getAttemptById(id);
-        quizAttemptRepository.delete(attempt);
+        quizAttemptRepository.delete(getAttempt(id));
     }
 }

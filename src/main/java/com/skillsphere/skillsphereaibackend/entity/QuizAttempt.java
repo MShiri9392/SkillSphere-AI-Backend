@@ -13,30 +13,18 @@ public class QuizAttempt {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
-
-    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String selectedAnswer;
+    @ManyToOne
+    @JoinColumn(name = "quiz_id")
+    private Quiz quiz;
 
     private Integer score;
 
-    private LocalDateTime attemptedAt;
+    private LocalDateTime attemptDate;
 
     public QuizAttempt() {
-    }
-
-    public QuizAttempt(Long id, Quiz quiz, User user, String selectedAnswer,
-                       Integer score, LocalDateTime attemptedAt) {
-        this.id = id;
-        this.quiz = quiz;
-        this.user = user;
-        this.selectedAnswer = selectedAnswer;
-        this.score = score;
-        this.attemptedAt = attemptedAt;
     }
 
     public Long getId() {
@@ -47,14 +35,6 @@ public class QuizAttempt {
         this.id = id;
     }
 
-    public Quiz getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
-
     public User getUser() {
         return user;
     }
@@ -63,12 +43,12 @@ public class QuizAttempt {
         this.user = user;
     }
 
-    public String getSelectedAnswer() {
-        return selectedAnswer;
+    public Quiz getQuiz() {
+        return quiz;
     }
 
-    public void setSelectedAnswer(String selectedAnswer) {
-        this.selectedAnswer = selectedAnswer;
+    public void setQuiz(Quiz quiz) {
+        this.quiz = quiz;
     }
 
     public Integer getScore() {
@@ -79,11 +59,11 @@ public class QuizAttempt {
         this.score = score;
     }
 
-    public LocalDateTime getAttemptedAt() {
-        return attemptedAt;
+    public LocalDateTime getAttemptDate() {
+        return attemptDate;
     }
 
-    public void setAttemptedAt(LocalDateTime attemptedAt) {
-        this.attemptedAt = attemptedAt;
+    public void setAttemptDate(LocalDateTime attemptDate) {
+        this.attemptDate = attemptDate;
     }
 }

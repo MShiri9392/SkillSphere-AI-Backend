@@ -1,8 +1,6 @@
 package com.skillsphere.skillsphereaibackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-
 import java.time.LocalDateTime;
 
 @Entity
@@ -13,30 +11,46 @@ public class Announcement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank(message = "Message is required")
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 2000)
     private String message;
-
-    private LocalDateTime createdAt;
 
     @ManyToOne
     @JoinColumn(name = "course_id")
     private Course course;
 
+    private LocalDateTime createdAt;
+
+    @ManyToOne
+    @JoinColumn(name = "created_by")
+    private User createdBy;
+
     public Announcement() {
     }
 
-    public Announcement(Long id, String title, String message,
-                        LocalDateTime createdAt, Course course) {
+    public Announcement(Long id,
+                        String title,
+                        String message,
+                        Course course,
+                        LocalDateTime createdAt,
+                        User createdBy) {
         this.id = id;
         this.title = title;
         this.message = message;
-        this.createdAt = createdAt;
         this.course = course;
+        this.createdAt = createdAt;
+        this.createdBy = createdBy;
     }
+
+    @PrePersist
+    public void prePersist() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+
+    // ---------------- Getters & Setters ----------------
 
     public Long getId() {
         return id;
@@ -62,6 +76,14 @@ public class Announcement {
         this.message = message;
     }
 
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -70,11 +92,11 @@ public class Announcement {
         this.createdAt = createdAt;
     }
 
-    public Course getCourse() {
-        return course;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCreatedBy(User createdBy) {
+        this.createdBy = createdBy;
     }
 }

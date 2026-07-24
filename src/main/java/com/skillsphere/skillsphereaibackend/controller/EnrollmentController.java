@@ -2,36 +2,38 @@ package com.skillsphere.skillsphereaibackend.controller;
 
 import com.skillsphere.skillsphereaibackend.entity.Enrollment;
 import com.skillsphere.skillsphereaibackend.service.EnrollmentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/enrollments")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EnrollmentController {
 
-    @Autowired
-    private EnrollmentService enrollmentService;
+    private final EnrollmentService service;
 
-    @PostMapping("/{userId}/{courseId}")
-    public Enrollment enroll(@PathVariable Long userId,
-                             @PathVariable Long courseId) {
+    public EnrollmentController(EnrollmentService service) {
+        this.service = service;
+    }
 
-        return enrollmentService.enroll(userId, courseId);
+    @PostMapping
+    public Enrollment enroll(@RequestBody Enrollment enrollment) {
+        return service.enroll(enrollment);
     }
 
     @GetMapping
-    public List<Enrollment> getAllEnrollments() {
-        return enrollmentService.getAllEnrollments();
+    public List<Enrollment> getAll() {
+        return service.getAllEnrollments();
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<Enrollment> getByUser(@PathVariable Long userId) {
+        return service.getUserEnrollments(userId);
     }
 
     @DeleteMapping("/{id}")
-    public String deleteEnrollment(@PathVariable Long id) {
-
-        enrollmentService.deleteEnrollment(id);
-
-        return "Enrollment Deleted Successfully";
+    public void delete(@PathVariable Long id) {
+        service.deleteEnrollment(id);
     }
 }

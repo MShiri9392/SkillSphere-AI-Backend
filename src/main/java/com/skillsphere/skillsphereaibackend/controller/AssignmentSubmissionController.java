@@ -16,39 +16,55 @@ public class AssignmentSubmissionController {
     @Autowired
     private AssignmentSubmissionService submissionService;
 
-    // Student submits assignment
     @PostMapping("/{assignmentId}/{userId}")
     public AssignmentSubmission submitAssignment(
             @PathVariable Long assignmentId,
             @PathVariable Long userId,
             @Valid @RequestBody AssignmentSubmission submission) {
 
-        return submissionService.submitAssignment(assignmentId, userId, submission);
+        return submissionService.submitAssignment(
+                assignmentId,
+                userId,
+                submission
+        );
     }
 
-    // Admin: View all submissions
     @GetMapping
     public List<AssignmentSubmission> getAllSubmissions() {
+
         return submissionService.getAllSubmissions();
+
     }
 
-    // View one submission
     @GetMapping("/{id}")
     public AssignmentSubmission getSubmission(@PathVariable Long id) {
+
         return submissionService.getSubmission(id);
+
     }
 
-    // Admin: Grade submission
+    // NEW ENDPOINT
+    @GetMapping("/student/{userId}")
+    public List<AssignmentSubmission> getStudentSubmissions(
+            @PathVariable Long userId) {
+
+        return submissionService.getStudentSubmissions(userId);
+
+    }
+
     @PutMapping("/{id}/grade")
     public AssignmentSubmission gradeSubmission(
             @PathVariable Long id,
             @RequestParam Integer grade,
             @RequestParam String feedback) {
 
-        return submissionService.gradeSubmission(id, grade, feedback);
+        return submissionService.gradeSubmission(
+                id,
+                grade,
+                feedback
+        );
     }
 
-    // Admin: Delete submission
     @DeleteMapping("/{id}")
     public String deleteSubmission(@PathVariable Long id) {
 
@@ -56,4 +72,5 @@ public class AssignmentSubmissionController {
 
         return "Submission Deleted Successfully";
     }
+
 }

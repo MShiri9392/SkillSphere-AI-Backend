@@ -1,11 +1,7 @@
 package com.skillsphere.skillsphereaibackend.service;
 
 import com.skillsphere.skillsphereaibackend.entity.Assignment;
-import com.skillsphere.skillsphereaibackend.entity.Course;
-import com.skillsphere.skillsphereaibackend.exception.ResourceNotFoundException;
 import com.skillsphere.skillsphereaibackend.repository.AssignmentRepository;
-import com.skillsphere.skillsphereaibackend.repository.CourseRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,31 +9,22 @@ import java.util.List;
 @Service
 public class AssignmentService {
 
-    @Autowired
-    private AssignmentRepository assignmentRepository;
+    private final AssignmentRepository repository;
 
-    @Autowired
-    private CourseRepository courseRepository;
+    public AssignmentService(AssignmentRepository repository) {
+        this.repository = repository;
+    }
 
-    public Assignment addAssignment(Long courseId, Assignment assignment) {
-
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Course not found"));
-
-        assignment.setCourse(course);
-
-        return assignmentRepository.save(assignment);
+    public Assignment addAssignment(Assignment assignment) {
+        return repository.save(assignment);
     }
 
     public List<Assignment> getAllAssignments() {
-        return assignmentRepository.findAll();
+        return repository.findAll();
     }
 
     public Assignment getAssignment(Long id) {
-        return assignmentRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Assignment not found"));
+        return repository.findById(id).orElseThrow();
     }
 
     public Assignment updateAssignment(Long id, Assignment assignment) {
@@ -46,12 +33,13 @@ public class AssignmentService {
 
         existing.setTitle(assignment.getTitle());
         existing.setDescription(assignment.getDescription());
+        existing.setDueDate(assignment.getDueDate());
+        existing.setCourseId(assignment.getCourseId());
 
-        return assignmentRepository.save(existing);
+        return repository.save(existing);
     }
 
     public void deleteAssignment(Long id) {
-        Assignment assignment = getAssignment(id);
-        assignmentRepository.delete(assignment);
+        repository.deleteById(id);
     }
 }

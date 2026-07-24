@@ -1,20 +1,22 @@
 package com.skillsphere.skillsphereaibackend.controller;
 
-import com.skillsphere.skillsphereaibackend.dto.DashboardResponse;
+import com.skillsphere.skillsphereaibackend.dto.DashboardDTO;
 import com.skillsphere.skillsphereaibackend.service.DashboardService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/dashboard")
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class DashboardController {
 
-    @Autowired
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
+
+    public DashboardController(DashboardService dashboardService) {
+        this.dashboardService = dashboardService;
+    }
 
     @GetMapping
-    public DashboardResponse getDashboard() {
-        return dashboardService.getDashboardDetails();
+    public DashboardDTO getDashboardStats() {
+        return dashboardService.getDashboardStats();
     }
 }

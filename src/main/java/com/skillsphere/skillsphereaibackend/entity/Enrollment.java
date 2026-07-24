@@ -10,21 +10,20 @@ public class Enrollment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    private Long courseId;
+
+    private String status;
 
     public Enrollment() {
     }
 
-    public Enrollment(Long id, User user, Course course) {
+    public Enrollment(Long id, Long userId, Long courseId, String status) {
         this.id = id;
-        this.user = user;
-        this.course = course;
+        this.userId = userId;
+        this.courseId = courseId;
+        this.status = status;
     }
 
     public Long getId() {
@@ -35,19 +34,27 @@ public class Enrollment {
         this.id = id;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public Course getCourse() {
-        return course;
+    public Long getCourseId() {
+        return courseId;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

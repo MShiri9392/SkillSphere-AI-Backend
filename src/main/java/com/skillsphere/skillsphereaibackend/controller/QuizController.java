@@ -2,49 +2,50 @@ package com.skillsphere.skillsphereaibackend.controller;
 
 import com.skillsphere.skillsphereaibackend.entity.Quiz;
 import com.skillsphere.skillsphereaibackend.service.QuizService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/quizzes")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class QuizController {
 
-    @Autowired
-    private QuizService quizService;
+    private final QuizService service;
 
-    // Add Quiz
+    public QuizController(QuizService service) {
+        this.service = service;
+    }
+
     @PostMapping
-    public Quiz addQuiz(@Valid @RequestBody Quiz quiz) {
-        return quizService.saveQuiz(quiz);
+    public Quiz addQuiz(@RequestBody Quiz quiz) {
+        return service.addQuiz(quiz);
     }
 
-    // Get All Quizzes
     @GetMapping
-    public List<Quiz> getAllQuizzes() {
-        return quizService.getAllQuizzes();
+    public List<Quiz> getAll() {
+        return service.getAllQuizzes();
     }
 
-    // Get Quiz By ID
     @GetMapping("/{id}")
     public Quiz getQuiz(@PathVariable Long id) {
-        return quizService.getQuiz(id);
+        return service.getQuizById(id);
     }
 
-    // Update Quiz
+    @GetMapping("/course/{courseId}")
+    public List<Quiz> getByCourse(@PathVariable Long courseId) {
+        return service.getCourseQuizzes(courseId);
+    }
+
     @PutMapping("/{id}")
-    public Quiz updateQuiz(@PathVariable Long id,
-                           @Valid @RequestBody Quiz quiz) {
-        return quizService.updateQuiz(id, quiz);
+    public Quiz update(@PathVariable Long id,
+                       @RequestBody Quiz quiz) {
+        return service.updateQuiz(id, quiz);
     }
 
-    // Delete Quiz
     @DeleteMapping("/{id}")
-    public String deleteQuiz(@PathVariable Long id) {
-        quizService.deleteQuiz(id);
-        return "Quiz Deleted Successfully";
+    public void delete(@PathVariable Long id) {
+        service.deleteQuiz(id);
     }
+
 }

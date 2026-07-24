@@ -1,57 +1,56 @@
 package com.skillsphere.skillsphereaibackend.service;
 
-import com.skillsphere.skillsphereaibackend.entity.Course;
 import com.skillsphere.skillsphereaibackend.entity.Enrollment;
-import com.skillsphere.skillsphereaibackend.entity.User;
-import com.skillsphere.skillsphereaibackend.exception.ResourceNotFoundException;
-import com.skillsphere.skillsphereaibackend.repository.CourseRepository;
+import com.skillsphere.skillsphereaibackend.repository.CertificateRepository;
 import com.skillsphere.skillsphereaibackend.repository.EnrollmentRepository;
-import com.skillsphere.skillsphereaibackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.skillsphere.skillsphereaibackend.repository.ProgressRepository;
 
 import java.util.List;
 
 @Service
 public class EnrollmentService {
 
-    @Autowired
-    private EnrollmentRepository enrollmentRepository;
+    private final EnrollmentRepository repository;
+    private final CertificateRepository certificateRepository;
+    private final ProgressRepository progressRepository;
+    public EnrollmentService(
+            EnrollmentRepository repository,
+            CertificateRepository certificateRepository,
+            ProgressRepository progressRepository) {
 
-    @Autowired
-    private UserRepository userRepository;
+        this.repository = repository;
+        this.certificateRepository = certificateRepository;
+        this.progressRepository = progressRepository;
+    }
 
-    @Autowired
-    private CourseRepository courseRepository;
 
-    public Enrollment enroll(Long userId, Long courseId) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User not found"));
-
-        Course course = courseRepository.findById(courseId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Course not found"));
-
-        Enrollment enrollment = new Enrollment();
-
-        enrollment.setUser(user);
-        enrollment.setCourse(course);
-
-        return enrollmentRepository.save(enrollment);
+    public Enrollment enroll(Enrollment enrollment) {
+        enrollment.setStatus("ENROLLED");
+        return repository.save(enrollment);
     }
 
     public List<Enrollment> getAllEnrollments() {
-        return enrollmentRepository.findAll();
+        return repository.findAll();
     }
 
+    public List<Enrollment> getUserEnrollments(Long userId) {
+        return repository.findByUserId(userId);
+    }
     public void deleteEnrollment(Long id) {
 
-        Enrollment enrollment = enrollmentRepository.findById(id)
+        Enrollment enrollment = repository.findById(id)
                 .orElseThrow(() ->
-                        new ResourceNotFoundException("Enrollment not found"));
+                        new RuntimeException("Enrollment not found"));
 
-        enrollmentRepository.delete(enrollment);
+        // Delete certificate first
+        certificateRepository.deleteCertificateByEnrollmentId(id);
+
+        // Delete progress
+        progressRepository.deleteProgressByEnrollmentId(id);
+
+        // Delete enrollment
+        repository.delete(enrollment);
     }
+
 }

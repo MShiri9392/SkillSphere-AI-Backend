@@ -1,42 +1,49 @@
 package com.skillsphere.skillsphereaibackend.service;
 
-import com.skillsphere.skillsphereaibackend.dto.DashboardResponse;
-import com.skillsphere.skillsphereaibackend.repository.CourseRepository;
-import com.skillsphere.skillsphereaibackend.repository.EnrollmentRepository;
-import com.skillsphere.skillsphereaibackend.repository.PaymentRepository;
-import com.skillsphere.skillsphereaibackend.repository.QuizRepository;
-import com.skillsphere.skillsphereaibackend.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.skillsphere.skillsphereaibackend.dto.DashboardDTO;
+import com.skillsphere.skillsphereaibackend.repository.*;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class DashboardService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final CourseRepository courseRepository;
+    private final EnrollmentRepository enrollmentRepository;
+    private final AssignmentRepository assignmentRepository;
+    private final CertificateRepository certificateRepository;
+    private final CourseReviewRepository courseReviewRepository;
+    private final DiscussionRepository discussionRepository;
 
-    @Autowired
-    private CourseRepository courseRepository;
+    public DashboardService(
+            UserRepository userRepository,
+            CourseRepository courseRepository,
+            EnrollmentRepository enrollmentRepository,
+            AssignmentRepository assignmentRepository,
+            CertificateRepository certificateRepository,
+            CourseReviewRepository courseReviewRepository,
+            DiscussionRepository discussionRepository) {
 
-    @Autowired
-    private EnrollmentRepository enrollmentRepository;
+        this.userRepository = userRepository;
+        this.courseRepository = courseRepository;
+        this.enrollmentRepository = enrollmentRepository;
+        this.assignmentRepository = assignmentRepository;
+        this.certificateRepository = certificateRepository;
+        this.courseReviewRepository = courseReviewRepository;
+        this.discussionRepository = discussionRepository;
+    }
 
-    @Autowired
-    private QuizRepository quizRepository;
+    public DashboardDTO getDashboardStats() {
 
-    @Autowired
-    private PaymentRepository paymentRepository;
-
-    public DashboardResponse getDashboardDetails() {
-
-        DashboardResponse response = new DashboardResponse();
-
-        response.setTotalUsers(userRepository.count());
-        response.setTotalCourses(courseRepository.count());
-        response.setTotalEnrollments(enrollmentRepository.count());
-        response.setTotalQuizzes(quizRepository.count());
-        response.setTotalPayments(paymentRepository.count());
-
-        return response;
+        return new DashboardDTO(
+                userRepository.count(),
+                courseRepository.count(),
+                enrollmentRepository.count(),
+                assignmentRepository.count(),
+                certificateRepository.count(),
+                courseReviewRepository.count(),
+                discussionRepository.count()
+        );
     }
 }

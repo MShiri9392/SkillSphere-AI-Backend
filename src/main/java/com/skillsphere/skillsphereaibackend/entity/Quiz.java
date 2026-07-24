@@ -1,7 +1,6 @@
 package com.skillsphere.skillsphereaibackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "quizzes")
@@ -11,42 +10,40 @@ public class Quiz {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Quiz title is required")
     private String title;
 
-    @NotBlank(message = "Question is required")
+    @Column(length = 1000)
     private String question;
 
-    @NotBlank(message = "Option 1 is required")
-    private String option1;
+    private String optionA;
 
-    @NotBlank(message = "Option 2 is required")
-    private String option2;
+    private String optionB;
 
-    @NotBlank(message = "Option 3 is required")
-    private String option3;
+    private String optionC;
 
-    @NotBlank(message = "Option 4 is required")
-    private String option4;
+    private String optionD;
 
-    @NotBlank(message = "Correct answer is required")
     private String correctAnswer;
+
+    private Long courseId;
 
     public Quiz() {
     }
 
     public Quiz(Long id, String title, String question,
-                String option1, String option2,
-                String option3, String option4,
-                String correctAnswer) {
+                String optionA, String optionB,
+                String optionC, String optionD,
+                String correctAnswer, Long courseId) {
+
         this.id = id;
         this.title = title;
         this.question = question;
-        this.option1 = option1;
-        this.option2 = option2;
-        this.option3 = option3;
-        this.option4 = option4;
+        this.optionA = optionA;
+        this.optionB = optionB;
+        this.optionC = optionC;
+        this.optionD = optionD;
         this.correctAnswer = correctAnswer;
+        this.courseId = courseId;
     }
 
     public Long getId() {
@@ -73,36 +70,36 @@ public class Quiz {
         this.question = question;
     }
 
-    public String getOption1() {
-        return option1;
+    public String getOptionA() {
+        return optionA;
     }
 
-    public void setOption1(String option1) {
-        this.option1 = option1;
+    public void setOptionA(String optionA) {
+        this.optionA = optionA;
     }
 
-    public String getOption2() {
-        return option2;
+    public String getOptionB() {
+        return optionB;
     }
 
-    public void setOption2(String option2) {
-        this.option2 = option2;
+    public void setOptionB(String optionB) {
+        this.optionB = optionB;
     }
 
-    public String getOption3() {
-        return option3;
+    public String getOptionC() {
+        return optionC;
     }
 
-    public void setOption3(String option3) {
-        this.option3 = option3;
+    public void setOptionC(String optionC) {
+        this.optionC = optionC;
     }
 
-    public String getOption4() {
-        return option4;
+    public String getOptionD() {
+        return optionD;
     }
 
-    public void setOption4(String option4) {
-        this.option4 = option4;
+    public void setOptionD(String optionD) {
+        this.optionD = optionD;
     }
 
     public String getCorrectAnswer() {
@@ -111,5 +108,13 @@ public class Quiz {
 
     public void setCorrectAnswer(String correctAnswer) {
         this.correctAnswer = correctAnswer;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 }

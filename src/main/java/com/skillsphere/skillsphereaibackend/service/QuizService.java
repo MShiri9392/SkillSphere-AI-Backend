@@ -1,9 +1,7 @@
 package com.skillsphere.skillsphereaibackend.service;
 
 import com.skillsphere.skillsphereaibackend.entity.Quiz;
-import com.skillsphere.skillsphereaibackend.exception.ResourceNotFoundException;
 import com.skillsphere.skillsphereaibackend.repository.QuizRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,45 +9,47 @@ import java.util.List;
 @Service
 public class QuizService {
 
-    @Autowired
-    private QuizRepository quizRepository;
+    private final QuizRepository repository;
 
-    // Add Quiz
-    public Quiz saveQuiz(Quiz quiz) {
-        return quizRepository.save(quiz);
+    public QuizService(QuizRepository repository) {
+        this.repository = repository;
     }
 
-    // Get All Quizzes
+    public Quiz addQuiz(Quiz quiz) {
+        return repository.save(quiz);
+    }
+
     public List<Quiz> getAllQuizzes() {
-        return quizRepository.findAll();
+        return repository.findAll();
     }
 
-    // Get Quiz By ID
-    public Quiz getQuiz(Long id) {
-        return quizRepository.findById(id)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Quiz not found with id : " + id));
+    public Quiz getQuizById(Long id) {
+        return repository.findById(id).orElseThrow(() ->
+                new RuntimeException("Quiz not found with id : " + id));
     }
 
-    // Update Quiz
+    public List<Quiz> getCourseQuizzes(Long courseId) {
+        return repository.findByCourseId(courseId);
+    }
+
     public Quiz updateQuiz(Long id, Quiz quiz) {
 
-        Quiz existingQuiz = getQuiz(id);
+        Quiz existing = getQuizById(id);
 
-        existingQuiz.setTitle(quiz.getTitle());
-        existingQuiz.setQuestion(quiz.getQuestion());
-        existingQuiz.setOption1(quiz.getOption1());
-        existingQuiz.setOption2(quiz.getOption2());
-        existingQuiz.setOption3(quiz.getOption3());
-        existingQuiz.setOption4(quiz.getOption4());
-        existingQuiz.setCorrectAnswer(quiz.getCorrectAnswer());
+        existing.setTitle(quiz.getTitle());
+        existing.setQuestion(quiz.getQuestion());
+        existing.setOptionA(quiz.getOptionA());
+        existing.setOptionB(quiz.getOptionB());
+        existing.setOptionC(quiz.getOptionC());
+        existing.setOptionD(quiz.getOptionD());
+        existing.setCorrectAnswer(quiz.getCorrectAnswer());
+        existing.setCourseId(quiz.getCourseId());
 
-        return quizRepository.save(existingQuiz);
+        return repository.save(existing);
     }
 
-    // Delete Quiz
     public void deleteQuiz(Long id) {
-        Quiz quiz = getQuiz(id);
-        quizRepository.delete(quiz);
+        repository.deleteById(id);
     }
+
 }

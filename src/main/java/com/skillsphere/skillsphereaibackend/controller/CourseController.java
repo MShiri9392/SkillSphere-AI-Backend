@@ -73,6 +73,13 @@ public class CourseController {
     public List<Course> searchByInstructor(@RequestParam String instructor) {
         return courseService.searchByInstructor(instructor);
     }
+    // =========================
+// Search Course By Category
+// =========================
+    @GetMapping("/search/category")
+    public List<Course> searchByCategory(@RequestParam String category) {
+        return courseService.searchByCategory(category);
+    }
 
     // =========================
     // Filter Courses By Maximum Price

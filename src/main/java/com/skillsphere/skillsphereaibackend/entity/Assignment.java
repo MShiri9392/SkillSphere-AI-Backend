@@ -1,8 +1,6 @@
 package com.skillsphere.skillsphereaibackend.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "assignments")
@@ -12,23 +10,24 @@ public class Assignment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Assignment title is required")
     private String title;
 
-    @NotBlank(message = "Description is required")
+    @Column(length = 3000)
     private String description;
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+
+    private String dueDate;
+
+    private Long courseId;
 
     public Assignment() {
     }
 
-    public Assignment(Long id, String title, String description, Course course) {
+    public Assignment(Long id, String title, String description, String dueDate, Long courseId) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.course = course;
+        this.dueDate = dueDate;
+        this.courseId = courseId;
     }
 
     public Long getId() {
@@ -55,11 +54,19 @@ public class Assignment {
         this.description = description;
     }
 
-    public Course getCourse() {
-        return course;
+    public String getDueDate() {
+        return dueDate;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setDueDate(String dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Long getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(Long courseId) {
+        this.courseId = courseId;
     }
 }

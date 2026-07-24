@@ -2,50 +2,44 @@ package com.skillsphere.skillsphereaibackend.controller;
 
 import com.skillsphere.skillsphereaibackend.entity.Assignment;
 import com.skillsphere.skillsphereaibackend.service.AssignmentService;
-import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/assignments")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AssignmentController {
 
-    @Autowired
-    private AssignmentService assignmentService;
+    private final AssignmentService service;
 
-    // Add Assignment
-    @PostMapping("/{courseId}")
-    public Assignment addAssignment(@PathVariable Long courseId,
-                                    @Valid @RequestBody Assignment assignment) {
-        return assignmentService.addAssignment(courseId, assignment);
+    public AssignmentController(AssignmentService service) {
+        this.service = service;
     }
 
-    // Get All Assignments
+    @PostMapping
+    public Assignment addAssignment(@RequestBody Assignment assignment) {
+        return service.addAssignment(assignment);
+    }
+
     @GetMapping
-    public List<Assignment> getAllAssignments() {
-        return assignmentService.getAllAssignments();
+    public List<Assignment> getAll() {
+        return service.getAllAssignments();
     }
 
-    // Get Assignment By ID
     @GetMapping("/{id}")
     public Assignment getAssignment(@PathVariable Long id) {
-        return assignmentService.getAssignment(id);
+        return service.getAssignment(id);
     }
 
-    // Update Assignment
     @PutMapping("/{id}")
-    public Assignment updateAssignment(@PathVariable Long id,
-                                       @Valid @RequestBody Assignment assignment) {
-        return assignmentService.updateAssignment(id, assignment);
+    public Assignment update(@PathVariable Long id,
+                             @RequestBody Assignment assignment) {
+        return service.updateAssignment(id, assignment);
     }
 
-    // Delete Assignment
     @DeleteMapping("/{id}")
-    public String deleteAssignment(@PathVariable Long id) {
-        assignmentService.deleteAssignment(id);
-        return "Assignment Deleted Successfully";
+    public void delete(@PathVariable Long id) {
+        service.deleteAssignment(id);
     }
 }

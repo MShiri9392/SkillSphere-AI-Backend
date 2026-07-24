@@ -2,7 +2,6 @@ package com.skillsphere.skillsphereaibackend.controller;
 
 import com.skillsphere.skillsphereaibackend.entity.Announcement;
 import com.skillsphere.skillsphereaibackend.service.AnnouncementService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,7 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/announcements")
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AnnouncementController {
 
     @Autowired
@@ -20,7 +19,7 @@ public class AnnouncementController {
     @PostMapping("/{courseId}")
     public Announcement createAnnouncement(
             @PathVariable Long courseId,
-            @Valid @RequestBody Announcement announcement) {
+            @RequestBody Announcement announcement) {
 
         return announcementService.createAnnouncement(courseId, announcement);
     }
@@ -31,7 +30,7 @@ public class AnnouncementController {
         return announcementService.getAllAnnouncements();
     }
 
-    // Get Announcement By ID
+    // Get Announcement By Id
     @GetMapping("/{id}")
     public Announcement getAnnouncementById(@PathVariable Long id) {
         return announcementService.getAnnouncementById(id);
@@ -41,17 +40,14 @@ public class AnnouncementController {
     @PutMapping("/{id}")
     public Announcement updateAnnouncement(
             @PathVariable Long id,
-            @Valid @RequestBody Announcement announcement) {
+            @RequestBody Announcement announcement) {
 
         return announcementService.updateAnnouncement(id, announcement);
     }
 
     // Delete Announcement
     @DeleteMapping("/{id}")
-    public String deleteAnnouncement(@PathVariable Long id) {
-
+    public void deleteAnnouncement(@PathVariable Long id) {
         announcementService.deleteAnnouncement(id);
-
-        return "Announcement deleted successfully";
     }
 }

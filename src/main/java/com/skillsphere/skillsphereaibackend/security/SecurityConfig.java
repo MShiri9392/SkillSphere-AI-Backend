@@ -21,11 +21,13 @@ public class SecurityConfig {
 
         http
                 .csrf(csrf -> csrf.disable())
+                .cors(Customizer.withDefaults())
 
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(auth -> auth
+                                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
                         // =========================
                         // Public APIs
@@ -42,7 +44,8 @@ public class SecurityConfig {
                         // =========================
                         // Course APIs
                         // =========================
-                        .requestMatchers(HttpMethod.GET, "/api/courses/**").hasAnyRole("ADMIN", "STUDENT")
+                                .requestMatchers(HttpMethod.GET, "/api/courses/**")
+                                .permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/courses/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/courses/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/courses/**").hasRole("ADMIN")
@@ -50,23 +53,26 @@ public class SecurityConfig {
                         // =========================
                         // Quiz APIs
                         // =========================
-                        .requestMatchers(HttpMethod.GET, "/api/quizzes/**").hasAnyRole("ADMIN", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, "/api/quizzes/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET, "/api/quizzes/**")
+                                .permitAll()
+                                  .requestMatchers(HttpMethod.POST, "/api/quizzes/**")
+                                   .permitAll()
                         .requestMatchers(HttpMethod.PUT, "/api/quizzes/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/quizzes/**").hasRole("ADMIN")
 
                         // =========================
                         // Quiz Attempt APIs
                         // =========================
-                        .requestMatchers(HttpMethod.GET, "/api/quiz-attempts/**").hasAnyRole("ADMIN", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, "/api/quiz-attempts/**").hasAnyRole("ADMIN", "STUDENT")
+                                .requestMatchers(HttpMethod.GET, "/api/quiz-attempts/**").permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/quiz-attempts/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/quiz-attempts/**").hasRole("ADMIN")
 
                         // =========================
                         // Enrollment APIs
                         // =========================
-                        .requestMatchers(HttpMethod.GET, "/api/enrollments/**").hasAnyRole("ADMIN", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, "/api/enrollments/**").hasAnyRole("ADMIN", "STUDENT")
+                                .requestMatchers(HttpMethod.GET, "/api/enrollments/**")
+                                .permitAll()
+                                .requestMatchers(HttpMethod.POST, "/api/enrollments/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/enrollments/**").hasRole("ADMIN")
 
                         // =========================
@@ -133,11 +139,8 @@ public class SecurityConfig {
                         // =========================
                         // Announcement APIs
                         // =========================
-                        .requestMatchers(HttpMethod.GET, "/api/announcements/**").hasAnyRole("ADMIN", "STUDENT")
-                        .requestMatchers(HttpMethod.POST, "/api/announcements/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/api/announcements/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/api/announcements/**").hasRole("ADMIN")
 
+                                .requestMatchers("/api/announcements/**").permitAll()
                                 // =========================
 // Announcement APIs
 // =========================
@@ -198,5 +201,23 @@ public class SecurityConfig {
 
                 .httpBasic(httpBasic -> httpBasic.disable());
         return http.build();
+    }
+    @Bean
+    public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
+
+        org.springframework.web.cors.CorsConfiguration configuration =
+                new org.springframework.web.cors.CorsConfiguration();
+
+        configuration.addAllowedOrigin("http://localhost:5173");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        org.springframework.web.cors.UrlBasedCorsConfigurationSource source =
+                new org.springframework.web.cors.UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 }

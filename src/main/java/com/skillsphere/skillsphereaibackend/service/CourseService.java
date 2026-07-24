@@ -41,7 +41,10 @@ public class CourseService {
         existingCourse.setTitle(course.getTitle());
         existingCourse.setDescription(course.getDescription());
         existingCourse.setInstructor(course.getInstructor());
+        existingCourse.setCategory(course.getCategory());
         existingCourse.setPrice(course.getPrice());
+        existingCourse.setImageUrl(course.getImageUrl());
+        existingCourse.setVideoUrl(course.getVideoUrl());
 
         return courseRepository.save(existingCourse);
     }
@@ -54,8 +57,8 @@ public class CourseService {
                         new ResourceNotFoundException("Course not found with ID: " + id));
 
         courseRepository.delete(existingCourse);
-
     }
+
     // Search by Title
     public List<Course> searchByTitle(String title) {
         return courseRepository.findByTitleContainingIgnoreCase(title);
@@ -64,6 +67,11 @@ public class CourseService {
     // Search by Instructor
     public List<Course> searchByInstructor(String instructor) {
         return courseRepository.findByInstructorContainingIgnoreCase(instructor);
+    }
+
+    // Search by Category
+    public List<Course> searchByCategory(String category) {
+        return courseRepository.findByCategoryContainingIgnoreCase(category);
     }
 
     // Filter by Maximum Price
